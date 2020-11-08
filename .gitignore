@@ -1,0 +1,3 @@
+authgateway_env/
+.vscode
+auth/.env
