@@ -1,3 +1,4 @@
 authgateway_env/
 .vscode
 auth/.env
+__pycache__/
