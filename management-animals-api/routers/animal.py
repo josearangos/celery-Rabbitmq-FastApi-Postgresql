@@ -5,6 +5,8 @@ from database import animalCrud
 from sqlalchemy.orm import Session
 from typing import List
 import datetime
+import requests
+from decouple import config
 
 
 from fastapi import APIRouter, Body,Depends,HTTPException
@@ -28,6 +30,7 @@ def read_animals(skip: int = 0 , limit: int = 100, db:Session = Depends(get_db))
     animals = animalCrud.get_animals(db,skip=skip,limit=limit)
     return animals
 
+
 @router.post("/",response_model=animalSchema.Animal)
 def create_animal(animal: animalSchema.AnimalBase, db:Session = Depends(get_db)):
 
@@ -35,6 +38,14 @@ def create_animal(animal: animalSchema.AnimalBase, db:Session = Depends(get_db))
     date_created = datetime.datetime.now()
 
     n_animal = animalSchema.AnimalCreated(notify = animal.notify,wild = animal.wild,name=animal.name,danger = animal.danger,last_modified=last_modified,date_created=date_created)
+
+    #Send email
+    url = config("URL_CELERY_API")+config("END_POINT_SEND_EMAIL")
+    # Get email
+    inp_post_response = requests.post(url,json={"email":"jose.arangos2@udea.edu.co"})
+    
+    if(inp_post_response):
+       pass
 
     return animalCrud.create_animal(db=db, animal=n_animal)
 
