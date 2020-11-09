@@ -4,7 +4,7 @@ from fastapi import FastAPI
 from routers.user import router as userRouter
 from routers.auth import router as authRouter
 
-app = FastAPI(title="Pet Management System")
+app = FastAPI(title="Auth Management System")
 
 
 #Include routes

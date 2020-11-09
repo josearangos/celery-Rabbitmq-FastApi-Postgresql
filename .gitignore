@@ -1,4 +1,7 @@
 authgateway_env/
+celery-env/
+animal-api-env/
 .vscode
 auth/.env
+management-animals-api/.env
 __pycache__/
