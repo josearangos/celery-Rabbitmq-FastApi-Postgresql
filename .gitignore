@@ -1,4 +1,5 @@
 authgateway_env/
+celery-env/
 animal-api-env/
 .vscode
 auth/.env
