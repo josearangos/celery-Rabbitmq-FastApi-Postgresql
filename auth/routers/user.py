@@ -47,3 +47,11 @@ def create_user(user: userSchema.UserCreate, db:Session = Depends(get_db)):
 
     return userCrud.create_user(db=db, user=user)
 
+
+@router.delete("/")
+def delete_user(user_id: int,db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+    return userCrud.delete_user(db=db,user_id=user_id)
+
+@router.put("/")
+def update_user(user:userSchema.UserUpdate,db:Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
+    return userCrud.update_user(db=db,user_id=user.id,payload=user)

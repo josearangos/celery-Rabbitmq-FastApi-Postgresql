@@ -13,3 +13,9 @@ class User(UserBase):
     id: int
     class Config:
         orm_mode = True
+
+
+
+class UserUpdate(BaseModel):
+    id: int
+    password: str
