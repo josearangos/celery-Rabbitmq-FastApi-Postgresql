@@ -4,4 +4,6 @@ animal-api-env/
 .vscode
 auth/.env
 management-animals-api/.env
+apigateway/.env
+celery-tasks/.env
 __pycache__/
