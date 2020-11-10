@@ -28,4 +28,3 @@ class AnimalUpdate(BaseModel):
     
 class AnimalUpdated(AnimalUpdate):
     last_modified:datetime
-
