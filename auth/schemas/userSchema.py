@@ -20,3 +20,4 @@ class User(UserBase):
 class UserUpdate(BaseModel):
     id: int
     password: str
+
