@@ -35,4 +35,4 @@ def delete_animal(animal_id: int,token: str = Depends(oauth2_scheme)):
 def update_animal(animal:animalSchema.AnimalUpdate,token: str = Depends(oauth2_scheme)):
     hed = {'Authorization': 'Bearer ' + token}
     response = requests.put(config("ANIMA_API_HOST")+config("ENPOINT_ANIMAL"),json=animal.dict(),headers=hed)
-
+    return json.loads(response.content)

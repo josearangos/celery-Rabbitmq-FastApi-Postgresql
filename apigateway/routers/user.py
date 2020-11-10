@@ -43,7 +43,7 @@ def delete_user(user_id: int,token: str = Depends(oauth2_scheme)):
 def update_user(user:userSchema.UserUpdate,token: str = Depends(oauth2_scheme)):
     hed = {'Authorization': 'Bearer ' + token}
     response = requests.put(config("USER_API_HOST")+config("ENPOINT_USER"),json=user.dict(),headers=hed)
-
+    return json.loads(response.content)
 
 
 

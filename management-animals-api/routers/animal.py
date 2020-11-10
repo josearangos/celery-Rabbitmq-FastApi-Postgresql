@@ -35,7 +35,7 @@ def read_animals(skip: int = 0 , limit: int = 100, db:Session = Depends(get_db),
     return animals
 
 
-@router.post("/",response_model=animalSchema.Animal)
+@router.post("/")
 def create_animal(animal: animalSchema.AnimalBase, db:Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
 
     last_modified = datetime.datetime.now()
@@ -54,24 +54,26 @@ def create_animal(animal: animalSchema.AnimalBase, db:Session = Depends(get_db),
     response = requests.get(url_me,headers =hed)
 
     email = json.loads(response.content)["username"]
-
-    print("EMAIL",email)
     
     # Send email
 
     inp_post_response = requests.post(url,json={"email":email})
 
     
-    #Response celery
-    if(inp_post_response):
-       pass
+    animal =  animalCrud.create_animal(db=db, animal=n_animal)
 
-    return animalCrud.create_animal(db=db, animal=n_animal)
+    return {"code":200,"message":"Animal added successfully"}
 
 
 @router.delete("/")
 def delete_animal(animal_id: int,db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
-    return animalCrud.delete_animal(db=db,animal_id=animal_id)
+    response =  animalCrud.delete_animal(db=db,animal_id=animal_id)
+
+    if(response == False):
+        return {"code":400,"message":"Animal deleted error"}
+
+    return {"code":200,"message":"Animal deleted successfully"}
+
 
 @router.put("/")
 def update_animal(animal:animalSchema.AnimalUpdate,db:Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
@@ -80,4 +82,10 @@ def update_animal(animal:animalSchema.AnimalUpdate,db:Session = Depends(get_db),
 
     n_animal = animalSchema.AnimalUpdated(id = animal.id,notify = animal.notify,wild = animal.wild,name=animal.name,danger = animal.danger,last_modified=last_modified)
 
-    return animalCrud.update_animal(db=db,animal_id=animal.id,payload=n_animal)
+    response =  animalCrud.update_animal(db=db,animal_id=animal.id,payload=n_animal)
+
+    if (response == False):
+
+        return {"code":400,"message":"Animal updated error"}
+    
+    return {"code":200,"message":"Animal updated successfully"}
