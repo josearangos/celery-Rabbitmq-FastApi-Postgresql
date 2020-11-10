@@ -7,10 +7,14 @@ from typing import List
 import datetime
 import requests
 from decouple import config
-
+from fastapi.security import  OAuth2PasswordRequestForm, OAuth2PasswordBearer
+import json
 
 from fastapi import APIRouter, Body,Depends,HTTPException
 animalModel.Base.metadata.create_all(bind=engine)
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+
 
 router = APIRouter()
 
@@ -26,13 +30,13 @@ def get_db():
         db.close()
 
 @router.get("/",response_model=List[animalSchema.Animal])
-def read_animals(skip: int = 0 , limit: int = 100, db:Session = Depends(get_db)):
+def read_animals(skip: int = 0 , limit: int = 100, db:Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     animals = animalCrud.get_animals(db,skip=skip,limit=limit)
     return animals
 
 
 @router.post("/",response_model=animalSchema.Animal)
-def create_animal(animal: animalSchema.AnimalBase, db:Session = Depends(get_db)):
+def create_animal(animal: animalSchema.AnimalBase, db:Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
 
     last_modified = datetime.datetime.now()
     date_created = datetime.datetime.now()
@@ -42,8 +46,23 @@ def create_animal(animal: animalSchema.AnimalBase, db:Session = Depends(get_db))
     #Send email
     url = config("URL_CELERY_API")+config("END_POINT_SEND_EMAIL")
     # Get email
-    inp_post_response = requests.post(url,json={"email":"jose.arangos2@udea.edu.co"})
+
+    url_me = config("USER_API_HOST")+config("ENPOINT_ME")
+
+    hed = {'Authorization': 'Bearer ' + token}
+
+    response = requests.get(url_me,headers =hed)
+
+    email = json.loads(response.content)["username"]
+
+    print("EMAIL",email)
     
+    # Send email
+
+    inp_post_response = requests.post(url,json={"email":email})
+
+    
+    #Response celery
     if(inp_post_response):
        pass
 
@@ -51,11 +70,11 @@ def create_animal(animal: animalSchema.AnimalBase, db:Session = Depends(get_db))
 
 
 @router.delete("/")
-def delete_animal(animal_id: int,db: Session = Depends(get_db)):
+def delete_animal(animal_id: int,db: Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
     return animalCrud.delete_animal(db=db,animal_id=animal_id)
 
 @router.put("/")
-def update_animal(animal:animalSchema.AnimalUpdate,db:Session = Depends(get_db)):
+def update_animal(animal:animalSchema.AnimalUpdate,db:Session = Depends(get_db),token: str = Depends(oauth2_scheme)):
 
     last_modified = datetime.datetime.now()
 

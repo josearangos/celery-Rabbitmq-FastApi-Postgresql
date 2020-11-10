@@ -11,6 +11,7 @@ from fastapi import APIRouter, Body,Depends,HTTPException
 from fastapi.security import OAuth2PasswordBearer
 
 userModel.Base.metadata.create_all(bind=engine)
+
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 

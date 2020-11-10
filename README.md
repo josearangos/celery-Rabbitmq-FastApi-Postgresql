@@ -11,6 +11,8 @@ mysecretpassword
 Nota: show queues http://localhost:15672/ user:guest passw: guest
 4. celery api: uvicorn main:app --port 8085 --reload
 5. Start celery: celery -A task.celery_app worker -l info -Q email_to_send
+6. api gatewat => uvicorn main:app --port 8086 --reload
+
 
 # Que se
 
