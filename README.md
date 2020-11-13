@@ -1,4 +1,3 @@
-# guane-technical-skill-test
 
 
 mysecretpassword
